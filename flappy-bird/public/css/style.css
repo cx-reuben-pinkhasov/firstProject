@@ -1,0 +1,318 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    color: #fff;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* ===== Screens ===== */
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* ===== Auth Screen ===== */
+.auth-tabs {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.auth-tab {
+    padding: 10px 30px;
+    font-size: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.auth-tab:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.auth-tab.active {
+    background: linear-gradient(135deg, #4ecca3, #38a882);
+    border-color: #4ecca3;
+}
+
+.auth-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.auth-form input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-form input:focus {
+    border-color: #4ecca3;
+}
+
+.auth-btn {
+    padding: 14px 40px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #4ecca3, #38a882);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    margin-top: 5px;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
+}
+
+.auth-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
+}
+
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.95rem;
+    min-height: 1.4rem;
+    text-align: center;
+}
+
+.confirm-field {
+    display: none;
+}
+
+.confirm-field.visible {
+    display: block;
+}
+
+/* ===== Game Screen ===== */
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.game-header .user-info {
+    font-size: 0.95rem;
+    opacity: 0.8;
+}
+
+.game-header .score-info {
+    display: flex;
+    gap: 20px;
+    font-size: 1rem;
+}
+
+.game-header .score-info span {
+    font-weight: bold;
+}
+
+.logout-btn {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.logout-btn:hover {
+    background: rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c;
+}
+
+.canvas-container {
+    position: relative;
+}
+
+canvas {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    display: block;
+    max-width: 100%;
+    height: auto;
+    cursor: pointer;
+}
+
+.game-instructions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 1.3rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    direction: rtl;
+}
+
+.game-instructions .sub {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 8px;
+}
+
+/* ===== Game Over Screen ===== */
+.gameover-box {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.gameover-box .final-score {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #f0a500;
+    text-shadow: 0 0 15px rgba(240, 165, 0, 0.5);
+}
+
+.gameover-box .best-score {
+    font-size: 1.2rem;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+.gameover-box .new-record {
+    color: #4ecca3;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.gameover-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: center;
+}
+
+.gameover-buttons button {
+    padding: 12px 30px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    color: #fff;
+}
+
+.play-again-btn {
+    background: linear-gradient(135deg, #4ecca3, #38a882);
+}
+
+.play-again-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
+}
+
+.gameover-logout-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.gameover-logout-btn:hover {
+    background: rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c !important;
+}
+
+/* Leaderboard */
+.leaderboard {
+    margin-top: 25px;
+    width: 100%;
+}
+
+.leaderboard h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.leaderboard-table th {
+    opacity: 0.6;
+    font-weight: normal;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.leaderboard-table tr.current-user td {
+    color: #4ecca3;
+    font-weight: bold;
+}
+
+@keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.pop {
+    animation: pop 0.3s ease;
+}

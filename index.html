@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>איקס עיגול</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .status {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            min-height: 2rem;
+            transition: all 0.3s;
+        }
+
+        .status.win {
+            color: #4ecca3;
+            text-shadow: 0 0 15px rgba(78, 204, 163, 0.5);
+            font-weight: bold;
+        }
+
+        .status.draw {
+            color: #f0a500;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-template-rows: repeat(3, 120px);
+            gap: 8px;
+        }
+
+        .cell {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .cell.taken {
+            cursor: default;
+        }
+
+        .cell.taken:hover {
+            transform: none;
+        }
+
+        .cell.x {
+            color: #e74c3c;
+            text-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+        }
+
+        .cell.o {
+            color: #3498db;
+            text-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        }
+
+        .cell.win-cell {
+            background: rgba(78, 204, 163, 0.2);
+            border-color: #4ecca3;
+            animation: pulse 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulse {
+            to { box-shadow: 0 0 25px rgba(78, 204, 163, 0.4); }
+        }
+
+        .cell.pop {
+            animation: pop 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .restart {
+            margin-top: 30px;
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #4ecca3, #38a882);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 204, 163, 0.4);
+        }
+
+        .scoreboard {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .score {
+            text-align: center;
+        }
+
+        .score .label {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .score .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .score.x-score .value { color: #e74c3c; }
+        .score.o-score .value { color: #3498db; }
+        .score.draw-score .value { color: #f0a500; }
+    </style>
+</head>
+<body>
+    <h1>איקס עיגול</h1>
+
+    <div class="scoreboard">
+        <div class="score x-score">
+            <div class="label">X</div>
+            <div class="value" id="x-wins">0</div>
+        </div>
+        <div class="score draw-score">
+            <div class="label">תיקו</div>
+            <div class="value" id="draws">0</div>
+        </div>
+        <div class="score o-score">
+            <div class="label">O</div>
+            <div class="value" id="o-wins">0</div>
+        </div>
+    </div>
+
+    <div class="status" id="status">תור של X</div>
+
+    <div class="board" id="board">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+    </div>
+
+    <button class="restart" id="restart">משחק חדש</button>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const statusEl = document.getElementById('status');
+        const restartBtn = document.getElementById('restart');
+        const xWinsEl = document.getElementById('x-wins');
+        const oWinsEl = document.getElementById('o-wins');
+        const drawsEl = document.getElementById('draws');
+
+        const WIN_COMBOS = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        let board = Array(9).fill('');
+        let currentPlayer = 'X';
+        let gameOver = false;
+        let scores = { X: 0, O: 0, draw: 0 };
+
+        function handleClick(e) {
+            const index = e.target.dataset.index;
+            if (board[index] || gameOver) return;
+
+            board[index] = currentPlayer;
+            e.target.textContent = currentPlayer;
+            e.target.classList.add('taken', currentPlayer.toLowerCase(), 'pop');
+
+            const winCombo = checkWin(currentPlayer);
+            if (winCombo) {
+                gameOver = true;
+                statusEl.textContent = `${currentPlayer} ניצח!`;
+                statusEl.classList.add('win');
+                winCombo.forEach(i => cells[i].classList.add('win-cell'));
+                scores[currentPlayer]++;
+                updateScoreboard();
+                return;
+            }
+
+            if (board.every(cell => cell)) {
+                gameOver = true;
+                statusEl.textContent = 'תיקו!';
+                statusEl.classList.add('draw');
+                scores.draw++;
+                updateScoreboard();
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            statusEl.textContent = `תור של ${currentPlayer}`;
+        }
+
+        function checkWin(player) {
+            return WIN_COMBOS.find(combo =>
+                combo.every(i => board[i] === player)
+            ) || null;
+        }
+
+        function updateScoreboard() {
+            xWinsEl.textContent = scores.X;
+            oWinsEl.textContent = scores.O;
+            drawsEl.textContent = scores.draw;
+        }
+
+        function restart() {
+            board = Array(9).fill('');
+            currentPlayer = 'X';
+            gameOver = false;
+            statusEl.textContent = 'תור של X';
+            statusEl.classList.remove('win', 'draw');
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('taken', 'x', 'o', 'win-cell', 'pop');
+            });
+        }
+
+        cells.forEach(cell => cell.addEventListener('click', handleClick));
+        restartBtn.addEventListener('click', restart);
+    </script>
+</body>
+</html>
